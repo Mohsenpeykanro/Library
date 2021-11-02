@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class bookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userID", updatable = false, nullable = false)
+    @Column(name = "bookID", updatable = false, nullable = false)
     private Integer id;
     @Column(name = "bookName")
     private String name;
