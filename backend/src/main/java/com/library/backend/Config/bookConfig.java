@@ -1,6 +1,7 @@
 package com.library.backend.Config;
 
 import com.library.backend.Repository.bookRepository;
+import com.library.backend.Service.bookService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,4 +15,5 @@ public class bookConfig {
 
         };
     }
+
 }
