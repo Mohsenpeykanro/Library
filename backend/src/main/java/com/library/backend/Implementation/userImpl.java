@@ -3,7 +3,11 @@ package com.library.backend.Implementation;
 import com.library.backend.Entity.userEntity;
 import com.library.backend.Repository.userRepository;
 import com.library.backend.Service.userService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,16 +15,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class userImpl implements userService {
+@AllArgsConstructor
+public class userImpl implements userService, UserDetailsService {
 
     // Repository
-
     private final userRepository userRepository;
-
-    @Autowired
-    public userImpl(com.library.backend.Repository.userRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     // Show All User
     @Override
@@ -68,4 +67,35 @@ public class userImpl implements userService {
             user.setEmail(email);
         }
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+        return userRepository.finduserEntityByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("user with email " + email +" not found"));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

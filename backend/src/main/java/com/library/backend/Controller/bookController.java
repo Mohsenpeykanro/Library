@@ -2,19 +2,17 @@ package com.library.backend.Controller;
 
 import com.library.backend.Entity.bookEntity;
 import com.library.backend.Service.bookService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "book")
+@AllArgsConstructor
 public class bookController {
 
     private final bookService bookService;
-    @Autowired
-    public bookController(com.library.backend.Service.bookService bookService) {
-        this.bookService = bookService;
-    }
 
     //Create New Book
     @PostMapping

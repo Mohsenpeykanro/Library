@@ -2,18 +2,16 @@ package com.library.backend.Controller;
 
 import com.library.backend.Entity.userEntity;
 import com.library.backend.Service.userService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "user")
+@AllArgsConstructor
 public class userController {
 
     private final userService userService;
-    @Autowired
-    public userController(com.library.backend.Service.userService userService) {
-        this.userService = userService;
-    }
 
     //Create New User
     @PostMapping
