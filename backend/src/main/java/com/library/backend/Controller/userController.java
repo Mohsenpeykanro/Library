@@ -15,18 +15,23 @@ public class userController {
         this.userService = userService;
     }
 
+    //Create New User
     @PostMapping
     public void registerNewUser(@RequestBody userEntity user){
         userService.addNewUser(user);
     }
 
+    //Delete User
     @DeleteMapping(path = "/delete/{userId}")
     public void deleteUser(@PathVariable("userId") Integer userId){
         userService.deleteUser(userId);
     }
 
+    //Update User
     @PutMapping(path = "/update/{userId}")
-    public void updateUser(@PathVariable("userId") Integer userId, @RequestParam(required = false) String name, @RequestParam(required = false) String email) {
+    public void updateUser(@PathVariable("userId") Integer userId,
+                           @RequestParam(required = false) String name,
+                           @RequestParam(required = false) String email) {
 
         userService.updateUser(userId, name, email);
     }
