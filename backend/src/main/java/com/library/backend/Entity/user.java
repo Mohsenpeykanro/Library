@@ -1,11 +1,13 @@
 package com.library.backend.Entity;
 
 
-import com.library.backend.Role.appUserRole;
+import com.library.backend.Role.userRole;
+import com.sun.istack.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.engine.jdbc.spi.TypeNullability;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,40 +21,46 @@ import java.util.Collections;
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
-public class userEntity implements UserDetails {
+public class user implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String name;
-    private String username;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private appUserRole appUserRole;
-    private Boolean locked;
-    private Boolean enabled;
+    private userRole userRole;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
 
-    public userEntity(String name,
-                      String username,
-                      String email,
-                      String password,
-                      appUserRole appUserRole,
-                      Boolean locked,
-                      Boolean enabled) {
-        this.name = name;
-        this.username = username;
+    public user(String firstName,
+                String lastName,
+                String email,
+                String password,
+                userRole userRole) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.appUserRole = appUserRole;
-        this.locked = locked;
-        this.enabled = enabled;
+        this.userRole = userRole;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appUserRole.name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
         return Collections.singletonList(authority);
+    }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     @Override
@@ -62,7 +70,7 @@ public class userEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

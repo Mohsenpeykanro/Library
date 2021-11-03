@@ -1,9 +1,6 @@
 package com.library.backend.Service;
 
-import com.library.backend.Entity.userEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.library.backend.Entity.user;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,12 +9,15 @@ import java.util.List;
 @Service
 public interface userService {
 
-    public List<userEntity> getUsers();
-    public void addNewUser(userEntity user);
-    public void deleteUser(Integer userId);
+    List<user> getUsers();
+    void addNewUser(user user);
+    void deleteUser(Integer userId);
     @Transactional
-    public void updateUser(Integer userId,
-                           String name,
-                           String email);
+    void updateUser(Integer userId,
+                    String name,
+                    String email);
+
+    String signUpUser(user user);
+    int enableUser(String email);
 
 }

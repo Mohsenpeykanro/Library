@@ -1,18 +1,22 @@
 package com.library.backend.Implementation;
 
-import com.library.backend.Entity.userEntity;
+import com.library.backend.Entity.confirmationToken;
+import com.library.backend.Entity.user;
 import com.library.backend.Repository.userRepository;
+import com.library.backend.Service.confirmationTokenService;
 import com.library.backend.Service.userService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -20,18 +24,19 @@ public class userImpl implements userService, UserDetailsService {
 
     // Repository
     private final userRepository userRepository;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final confirmationTokenService confirmationTokenService;
     // Show All User
     @Override
-    public List<userEntity> getUsers() {
+    public List<user> getUsers() {
         return userRepository.findAll();
     }
 
     // Add New User
     @Override
-    public void addNewUser(userEntity user) {
-        Optional<userEntity> userOptional =
-                userRepository.finduserEntityByEmail(user.getEmail());
+    public void addNewUser(user user) {
+        Optional<com.library.backend.Entity.user> userOptional =
+                userRepository.findByEmail(user.getEmail());
         if (userOptional.isPresent()) {
             throw new IllegalStateException("email taken");
         }
@@ -52,15 +57,15 @@ public class userImpl implements userService, UserDetailsService {
     //Update Book
     @Override
     public void updateUser(Integer userId, String name, String email) {
-        userEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException(
+        user user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException(
                 "User With Id " + userId + " Does not exists"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(user.getName(), name)) {
-            user.setName(name);
+        if (name != null && name.length() > 0 && !Objects.equals(user.getFirstName(), name)) {
+            user.setFirstName(name);
         }
 
         if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
-            Optional<userEntity> userEntityOptional = userRepository.finduserEntityByEmail(email);
+            Optional<com.library.backend.Entity.user> userEntityOptional = userRepository.findByEmail(email);
             if (userEntityOptional.isPresent()) {
                 throw new IllegalStateException("email taken");
             }
@@ -69,9 +74,42 @@ public class userImpl implements userService, UserDetailsService {
     }
 
     @Override
+    public String signUpUser(user user) {
+        boolean userExists = userRepository
+                .findByEmail(user.getEmail())
+                .isPresent();
+
+        if (userExists){
+            throw new IllegalStateException("email is already taken");
+        }
+
+        String encodedPass =  bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPass);
+        userRepository.save(user);
+        String token = UUID.randomUUID().toString();
+
+        // TODO: Send Confirmation Token
+        confirmationToken confirmationToken =
+                new confirmationToken(
+                        token,
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusMinutes(15),
+                        user);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+        // TODO: Send Email
+        return token;
+    }
+
+    @Override
+    public int enableUser(String email) {
+        return userRepository.enableUser(email);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        return userRepository.finduserEntityByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("user with email " + email +" not found"));
     }
 }

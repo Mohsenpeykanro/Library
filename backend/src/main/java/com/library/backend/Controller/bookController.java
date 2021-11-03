@@ -1,10 +1,8 @@
 package com.library.backend.Controller;
 
-import com.library.backend.Entity.bookEntity;
+import com.library.backend.Entity.book;
 import com.library.backend.Service.bookService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +14,7 @@ public class bookController {
 
     //Create New Book
     @PostMapping
-    public void registerNewBook(@RequestBody bookEntity book){
+    public void registerNewBook(@RequestBody book book){
         bookService.addNewBook(book);
     }
 

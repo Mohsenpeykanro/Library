@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -18,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class webSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final userImpl userService;
+    private final userService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -26,7 +27,7 @@ public class webSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("registration/**")
+                .antMatchers("/registration/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated().and()
@@ -40,11 +41,9 @@ public class webSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider();
-
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService((UserDetailsService) userService);
         return provider;
     }
 }

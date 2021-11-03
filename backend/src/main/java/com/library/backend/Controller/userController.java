@@ -1,9 +1,8 @@
 package com.library.backend.Controller;
 
-import com.library.backend.Entity.userEntity;
+import com.library.backend.Entity.user;
 import com.library.backend.Service.userService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +14,7 @@ public class userController {
 
     //Create New User
     @PostMapping
-    public void registerNewUser(@RequestBody userEntity user){
+    public void registerNewUser(@RequestBody user user){
         userService.addNewUser(user);
     }
 
